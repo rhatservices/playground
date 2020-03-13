@@ -1,0 +1,4 @@
+- name: configure host system
+  hosts: playground.stderr.at
+  roles:
+    - prerequisites

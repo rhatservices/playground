@@ -1,0 +1,13 @@
+---
+- name: install required packages
+  dnf:
+    name:
+      - libvirt
+      - podman
+    state: present
+
+- name: enable and start libvirtd
+  systemd:
+    name: libvirtd
+    state: started
+    enabled: True
