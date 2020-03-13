@@ -4,6 +4,11 @@
     name:
       - libvirt
       - podman
+      - virt-install
+      - virt-manager
+      - libguestfs-tools
+      - virt-viewer
+      - xauth
     state: present
 
 - name: enable and start libvirtd

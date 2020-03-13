@@ -1,0 +1,7 @@
+---
+- name: setup the bastion host
+  gather_facts: no
+  hosts:
+    - playground.stderr.at
+  roles:
+    - bastion
