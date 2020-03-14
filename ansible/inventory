@@ -2,4 +2,4 @@
 playground.stderr.at
 
 [jumphost]
-bastion ansible_host=192.168.122.101 ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q root@playground.stderr.at"'
+bastion ansible_host=192.168.50.2 ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q root@playground.stderr.at"'

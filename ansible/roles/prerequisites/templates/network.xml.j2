@@ -4,10 +4,14 @@
     <forward mode='nat'/>
     <dns>
         <host ip='192.168.50.2'>
+            <hostname>bastion.compute.local</hostname>
+        </host>
+
+        <host ip='192.168.50.3'>
             <hostname>bootstrap.compute.local</hostname>
         </host>
 
-       <host ip='192.168.50.3'>
+       <host ip='192.168.50.4'>
             <hostname>host.compute.local</hostname>
             <hostname>api-int.compute.local</hostname>
             <hostname>api.compute.local</hostname>
@@ -20,8 +24,9 @@
 
     <ip address='192.168.50.1' netmask='255.255.255.0'>
         <dhcp>
-            <host mac='52:54:00:00:50:02' name='bootstrap.compute.local' ip='192.168.50.2'/>
-            <host mac='52:54:00:00:50:03' name='master-0.compute.local' ip='192.168.50.3'/>
+            <host mac='52:54:00:00:50:02' name='bastion.compute.local' ip='192.168.50.2'/>
+            <host mac='52:54:00:00:50:03' name='bootstrap.compute.local' ip='192.168.50.3'/>
+	    <host mac='52:54:00:00:50:04' name='master-0.compute.local' ip='192.168.50.4'/>
         </dhcp>
     </ip>
 </network>

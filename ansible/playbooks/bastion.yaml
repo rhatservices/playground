@@ -4,4 +4,4 @@
   hosts:
     - playground.stderr.at
   roles:
-    - bootstrap
+    - bastion
