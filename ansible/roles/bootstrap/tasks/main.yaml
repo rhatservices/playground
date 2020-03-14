@@ -1,0 +1,30 @@
+- name: check if bootstrap host already exists
+  virt:
+    command: info
+  register: virt_info
+
+- name: create bootstrap host
+  block:
+  - name: check rhel images exists
+    stat:
+      path: /root/Downloads/rhel-8.1-x86_64-kvm.qcow2
+    register: rhel_qcow
+
+  - fail:
+      msg: "please download the rhel image to /root/Downloads/"
+    when: not rhel_qcow.stat.exists
+
+  - name: copy rhel image to libvirt folder
+    copy:
+      src: /root/Downloads/rhel-8.1-x86_64-kvm.qcow2
+      dest: /var/lib/libvirt/images/bootstrap.qcow2
+      remote_src: yes
+      force: no
+
+  - name: set root password and remove cloud init
+    command: /usr/bin/virt-customize -a /var/lib/libvirt/images/bootstrap.qcow2 --root-password password:redhat  --uninstall cloud-init  --hostname bootstrap --run-command 'mkdir -p /root/.ssh;chmod 700 /root/.ssh; touch /.autorelabel' --copy-in /root/.ssh/authorized_keys:/root/.ssh
+
+  - name: install bootstrap host with virt-install
+    command: virt-install --name bootstrap --memory 2048 --vcpus 1 --disk /var/lib/libvirt/images/bootstrap.qcow2 --import --os-variant rhel8.1 --noautoconsole --network "network=ocp4,mac=52:54:00:00:50:02"
+
+  when: virt_info.bootstrap is not defined

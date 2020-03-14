@@ -1,0 +1,27 @@
+<network>
+    <name>ocp4</name>
+    <domain name='compute.local'/>
+    <forward mode='nat'/>
+    <dns>
+        <host ip='192.168.50.2'>
+            <hostname>bootstrap.compute.local</hostname>
+        </host>
+
+       <host ip='192.168.50.3'>
+            <hostname>host.compute.local</hostname>
+            <hostname>api-int.compute.local</hostname>
+            <hostname>api.compute.local</hostname>
+            <hostname>master-0.compute.local</hostname>
+            <hostname>etcd-0.compute.local</hostname>
+        </host>
+
+        <srv service='etcd-server-ssl' protocol='tcp' domain='compute.local' target='etcd-0.compute.local' port='2380' priority='0' weight='10'/>
+    </dns>
+
+    <ip address='192.168.50.1' netmask='255.255.255.0'>
+        <dhcp>
+            <host mac='52:54:00:00:50:02' name='bootstrap.compute.local' ip='192.168.50.2'/>
+            <host mac='52:54:00:00:50:03' name='master-0.compute.local' ip='192.168.50.3'/>
+        </dhcp>
+    </ip>
+</network>

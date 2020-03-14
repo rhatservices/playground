@@ -9,6 +9,7 @@
       - libguestfs-tools
       - virt-viewer
       - xauth
+      - python3-lxml
     state: present
 
 - name: enable and start libvirtd
@@ -16,3 +17,20 @@
     name: libvirtd
     state: started
     enabled: True
+
+- name: define ocp4 network
+  virt_net:
+    command: define
+    autostart: yes
+    name: ocp4
+    xml: '{{ lookup("template", "templates/network.xml.j2") }}'
+
+- name: start ocp4 network
+  virt_net:
+    command: create
+    name: ocp4
+
+- name: enable autostart for ocp4 network
+  virt_net:
+    autostart: yes
+    name: ocp4
