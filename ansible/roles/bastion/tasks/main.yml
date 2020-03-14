@@ -54,7 +54,7 @@
 
 - name: restart NetworkManager
   service:
-    name: NetworkManger
+    name: NetworkManager
     state: restarted
 
 - name: deploy haproxy config
