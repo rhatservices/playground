@@ -12,6 +12,15 @@
       - python3-lxml
     state: present
 
+- name: download required RHCOS files
+  get_url:
+    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.3/4.3.0/{{ item }}"
+    dest: "/root/Downloads/{{ item }}"
+  with_items:
+    - rhcos-4.3.0-x86_64-metal.raw.gz
+    - rhcos-4.3.0-x86_64-installer-initramfs.img
+    - rhcos-4.3.0-x86_64-installer-kernel
+
 - name: enable and start libvirtd
   systemd:
     name: libvirtd

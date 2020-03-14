@@ -1,0 +1,75 @@
+- name: register bastion
+  redhat_subscription:
+    activationkey: OCP4Playground
+    org_id: "{{ bastion_rhn_org_id }}"
+    syspurpose:
+      usage: "OCP4 Playground"
+  register: rhn_register
+
+- name: enable base repo
+  rhsm_repository:
+    name: rhel-8-for-x86_64-baseos-rpms
+    state: enabled
+  when: rhn_register.changed
+
+- name: upgrade all packages
+  dnf:
+    name: '*'
+    state: latest
+  register: upgraded
+
+- name: reboot bastion after updating
+  reboot:
+  when: upgraded.changed
+
+- name: install required packages
+  dnf:
+    name:
+      - haproxy
+      - dnsmasq
+      - bind-utils
+    state: present
+
+- name: deploy dnsmasq config
+  template:
+    src: templates/dnsmasq_ocp4.conf.j2
+    dest: /etc/dnsmasq.d/ocp4.conf
+
+- name: deploy additional hosts file for dnsmasq
+  template:
+    src: templates/hosts.j2
+    dest: /etc/hosts.ocp4
+
+- name: enable and start dnsmasq
+  service:
+    name: dnsmasq
+    enabled: yes
+    state: started
+
+- name: use local dnsmasq for resolving
+  command: /usr/bin/nmcli connection modify "System eth0" ipv4.ignore-auto-dns yes
+
+- name: use local dnsmasq for resolving
+  command: /usr/bin/nmcli connection modify "System eth0" ipv4.dns 192.168.50.2
+
+- name: restart NetworkManager
+  service:
+    name: NetworkManger
+    state: restarted
+
+- name: deploy haproxy config
+  template:
+    src: templates/haproxy.conf.j2
+    dest: /etc/haproxy/haproxy.conf
+
+- name: allow haproxy to bind to any port
+  seboolean:
+    name: haproxy_connect_any
+    state: yes
+    persistent: yes
+
+- name: enable and start haproxy
+  service:
+    name: haproxy
+    enabled: yes
+    state: started
