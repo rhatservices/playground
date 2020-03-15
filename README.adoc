@@ -1,0 +1,4 @@
+== TODO's
+
+* configure dnsmasq on hetnzer to forward compute.local requests to bastion host
+* move podman container to bastion?
