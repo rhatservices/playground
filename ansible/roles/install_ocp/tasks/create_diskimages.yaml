@@ -1,0 +1,14 @@
+- name: check if disk images already exist
+  stat:
+    path: "/var/lib/libvirt/images/{{ item }}"
+  register: install_ocp_diskimage
+
+- name: create and format disk
+  block:
+    - name: create disk images for bootstrap and master node
+      command: /usr/bin/qemu-img create -f qcow2 "/var/lib/libvirt/images/{{ item }}-vda.qcow2" 50G
+
+    - name: create disk images for bootstrap and master node
+      command: /usr/bin/virt-format --format=qcow2 -a "/var/lib/libvirt/images/{{ item }}-vda.qcow2"
+
+  when: not install_ocp_diskimage.stat.exists

@@ -21,6 +21,17 @@
     - rhcos-4.3.0-x86_64-installer-initramfs.img
     - rhcos-4.3.0-x86_64-installer-kernel
 
+- name: download and extract required client binaries
+  unarchive:
+    src: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.3/{{ item }}"
+    dest: /usr/local/bin/
+    remote_src: yes
+    exclude:
+      - README.md
+  with_items:
+    - openshift-install-linux.tar.gz
+    - openshift-client-linux.tar.gz
+
 - name: enable and start libvirtd
   systemd:
     name: libvirtd

@@ -1,3 +1,0 @@
-192.168.50.2	bastion.compute.local
-192.168.50.3	bootstrap.compute.local
-192.168.50.4	host.compute.local api-int.compute.local api.compute.local master-0.compute.local etcd-0.compute.local

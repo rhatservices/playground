@@ -1,0 +1,8 @@
+- name: create disk images
+  include_tasks: create_diskimages.yaml
+  with_items:
+    - bootstrap
+    - master-0
+
+- name: create bootstrap node
+  command: virt-install --name bootstrap --disk /var/lib/libvirt/images/bootstrap-vda.qcow2 --memory 8192 --vcpus 2 --os-type=linux --os-variant rhel7.0 --network "network=ocp4,mac=52:54:00:00:50:03" --extra-args="nomodeset coreos.inst=yes coreos.inst.install_dev=vda coreos.inst.image_url=http://192.168.50.1/pub/rhcos-4.3.0-x86_64-metal.raw.gz rd.neednet=1" --location=boot/
