@@ -40,7 +40,9 @@ frontend router_https
 backend router_https
     balance roundrobin
     option ssl-hello-chk
+    server master-0 master-0.compute.local:443 check
     server worker-0 worker-0.compute.local:443 check
+    server worker-1 worker-1.compute.local:443 check
 
 frontend router_http
     mode http
@@ -51,4 +53,6 @@ frontend router_http
 backend router_http
     mode http
     balance roundrobin
+    server master-0 master-0.compute.local:80 check
     server worker-0 worker-0.compute.local:80 check
+    server worker-1 worker-1.compute.local:80 check

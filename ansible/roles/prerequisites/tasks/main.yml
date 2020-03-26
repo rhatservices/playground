@@ -10,7 +10,32 @@
       - virt-viewer
       - xauth
       - python3-lxml
+      - tmux
+      - bind-utils
+      - dnsmasq
     state: present
+
+- name: deploy ocp dnsmasq configuration
+  template:
+    src: ocp.conf.j2
+    dest: /etc/dnsmasq.d/ocp.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: deploy dns dnsmasq configuration
+  template:
+    src: dns.conf.j2
+    dest: /etc/dnsmasq.d/dns.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: enable and start dnsmasq service
+  service:
+    name: dnsmasq
+    state: started
+    enabled: true
 
 - name: download required RHCOS files
   get_url:
