@@ -18,17 +18,35 @@
       msg: "please download the rhel image to /root/Downloads/"
     when: not rhel_qcow.stat.exists
 
-  - name: copy rhel image to libvirt folder
+  - name: copy rhel image to temporary image file
     copy:
       src: /root/Downloads/rhel-8.1-x86_64-kvm.qcow2
-      dest: "/var/lib/libvirt/images/{{ item.name }}-vda.qcow2"
+      dest: "/var/lib/libvirt/images/{{ item.name }}-vda.qcow2.temp"
       remote_src: yes
       force: no
     register: imaged_copied
 
+  - name: resize disk to {{ item.disksize }}GB
+    # the default size is 10GB
+    command: qemu-img resize "/var/lib/libvirt/images/{{ item.name }}-vda.qcow2.temp"  "{{ item.disksize }}"
+
+  - name: copy temporary image file to destination image file
+    copy:
+      src: "/var/lib/libvirt/images/{{ item.name }}-vda.qcow2.temp"
+      dest: "/var/lib/libvirt/images/{{ item.name }}-vda.qcow2"
+      remote_src: yes
+      force: no
+
+  - name: resize the destination image file
+    command: virt-resize --expand /dev/sda1 "/var/lib/libvirt/images/{{ item.name }}-vda.qcow2.temp" "/var/lib/libvirt/images/{{ item.name }}-vda.qcow2"
+
+  - name: remove the temporary disk image
+    file:
+      path: "/var/lib/libvirt/images/{{ item.name }}-vda.qcow2.temp"
+      state: absent
+
   - name: set root password and remove cloud init
     command: /usr/bin/virt-customize -a /var/lib/libvirt/images/{{ item.name }}-vda.qcow2 --root-password password:redhat  --uninstall cloud-init  --hostname {{ item.name }} --run-command 'mkdir -p /root/.ssh;chmod 700 /root/.ssh; touch /.autorelabel' --copy-in /root/.ssh/authorized_keys:/root/.ssh
-    when: imaged_copied.changed
 
   - name: install {{ item.name }} with virt-install
     command: virt-install --name {{ item.name }} --memory {{ item.memory }} --vcpus {{ item.cpu }} --disk /var/lib/libvirt/images/{{ item.name }}-vda.qcow2 --import --os-variant rhel8.1 --noautoconsole --network "network={{ item.network }},mac={{ item.macaddr }}"

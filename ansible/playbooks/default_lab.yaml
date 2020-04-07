@@ -10,14 +10,14 @@
       netmask: 255.255.255.0
     labhosts:
       - name: lab01
-        disksize: 30G
+        disksize: 100G
         memory: 8192
         cpu: 2
         network: lab
         macaddr: "52:54:00:01:50:02"
         ipaddr: "192.168.100.2"
       - name: lab02
-        disksize: 30G
+        disksize: 100G
         memory: 8192
         cpu: 2
         network: lab
