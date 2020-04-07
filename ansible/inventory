@@ -1,5 +1,5 @@
 [hetzner]
-playground.stderr.at
+playground.stderr.at ansible_user=root
 
 [jumphost]
 bastion ansible_host=192.168.50.2 ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q root@playground.stderr.at"'
