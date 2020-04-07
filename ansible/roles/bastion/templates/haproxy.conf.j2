@@ -31,7 +31,9 @@ backend machine_config
     balance roundrobin
     option ssl-hello-chk
     server bootstrap bootstrap.compute.local:22623 check
-    server master master-0.compute.local:22623 check
+    server master-0 master-0.compute.local:22623 check
+    server master-1 master-1.compute.local:22623 check
+    server master-2 master-2.compute.local:22623 check
 
 frontend router_https
     bind 0.0.0.0:443
@@ -41,6 +43,8 @@ backend router_https
     balance roundrobin
     option ssl-hello-chk
     server master-0 master-0.compute.local:443 check
+    server master-1 master-1.compute.local:443 check
+    server master-2 master-2.compute.local:443 check
     server worker-0 worker-0.compute.local:443 check
     server worker-1 worker-1.compute.local:443 check
 
@@ -54,5 +58,7 @@ backend router_http
     mode http
     balance roundrobin
     server master-0 master-0.compute.local:80 check
+    server master-1 master-1.compute.local:80 check
+    server master-2 master-2.compute.local:80 check
     server worker-0 worker-0.compute.local:80 check
     server worker-1 worker-1.compute.local:80 check
