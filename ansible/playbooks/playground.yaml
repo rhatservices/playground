@@ -2,4 +2,4 @@
   gather_facts: no
   hosts: playground.stderr.at
   roles:
-    - prerequisites
+    - playground

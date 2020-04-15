@@ -1,0 +1,3 @@
+---
+lab_destroy: false
+lab_default_image: rhel-server-7.8-x86_64-kvm.qcow2

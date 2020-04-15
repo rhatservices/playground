@@ -13,7 +13,14 @@
       - tmux
       - bind-utils
       - dnsmasq
+      - tigervnc
+      - xterm
     state: present
+
+- name: create vnc user
+  user:
+    name: vnc
+    groups: wheel
 
 - name: deploy ocp dnsmasq configuration
   template:

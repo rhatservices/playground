@@ -1,0 +1,56 @@
+- name: install satellite
+  hosts:
+    - satellite
+  gather_facts: no
+  tasks:
+    - fail:
+        msg: "Please define your rhn_org_id in the inventory, e.g. in inventory/host_vars/satellite"
+      when: rhn_org_id is not defined
+
+    - name: register
+      redhat_subscription:
+        activationkey: Satellite
+        org_id: "{{ rhn_org_id }}"
+        syspurpose:
+          usage: "Playground"
+      register: rhn_register
+
+    - name: disable all RHSM repositories
+      rhsm_repository:
+        name: '*'
+        state: disabled
+
+    - name: enable required repos
+      rhsm_repository:
+        name:
+         - rhel-7-server-rpms
+         - rhel-7-server-satellite-6.6-rpms
+         - rhel-7-server-satellite-maintenance-6-rpms
+         - rhel-7-server-satellite-maintenance-6-rpms
+         - rhel-server-rhscl-7-rpms
+         - rhel-7-server-ansible-2.8-rpms
+        state: enabled
+
+    - name: install satellite package
+      yum:
+        name:
+          - satellite
+          - chrony
+          - sos
+          - tmux
+        state: present
+
+    - name: enable chrony service
+      service:
+        name: chronyd
+        enabled: true
+        state: started
+
+# now execute
+# satellite-installer --scenario satellite \
+# --foreman-initial-organization "initial_organization_name" \
+# --foreman-initial-location "initial_location_name" \
+# --foreman-initial-admin-username admin_user_name \
+# --foreman-initial-admin-password admin_password
+
+# satellite-installer --scenario=satellite --foreman-initial-organization="lab" --foreman-initial-location="lab_location" --foreman-initial-admin-username admin --foreman-initial-admin-password redhat
