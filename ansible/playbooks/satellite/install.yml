@@ -12,7 +12,7 @@
         activationkey: Satellite
         org_id: "{{ rhn_org_id }}"
         syspurpose:
-          usage: "Playground"
+          usage: "Satellite"
       register: rhn_register
 
     - name: disable all RHSM repositories

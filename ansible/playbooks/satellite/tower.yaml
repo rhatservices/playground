@@ -1,0 +1,36 @@
+- name: install satellite
+  hosts:
+    - towerhost
+  gather_facts: no
+  tasks:
+    - fail:
+        msg: "Please define your rhn_org_id in the inventory, e.g. in inventory/host_vars/satellite"
+      when: rhn_org_id is not defined
+
+    - name: register
+      redhat_subscription:
+        activationkey: Playground
+        org_id: "{{ rhn_org_id }}"
+        syspurpose:
+          usage: "Playground"
+      register: rhn_register
+
+    - name: extract tower installation tar.gz
+      unarchive:
+        src: https://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-3.6.3-1.tar.gz
+        dest: /root
+        remote_src: yes
+        creates: /root/ansible-tower-setup-3.6.3-1
+
+    - name: disable all RHSM repositories
+      rhsm_repository:
+        name: '*'
+        state: disabled
+
+    - name: enable required repos
+      rhsm_repository:
+        name:
+         - rhel-8-for-x86_64-baseos-rpms
+         - rhel-8-for-x86_64-appstream-rpms
+         - ansible-2.9-for-rhel-8-x86_64-rpms
+        state: enabled
